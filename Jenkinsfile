@@ -38,8 +38,8 @@ pipeline {
         stage('Login to DockerHub') {
             steps {
                 script {
-                    // Use sudo to ensure Docker commands run
-                    sh 'sudo /usr/local/bin/docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                    // Pass password via stdin to sudo
+                    sh "echo $SUDO_PASSWORD | sudo -S /usr/local/bin/docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
                 }
             }
         }
