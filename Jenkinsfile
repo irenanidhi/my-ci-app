@@ -38,10 +38,9 @@ pipeline {
         stage('Login to DockerHub') {
             steps {
                 script {
-                    // Login to DockerHub using the stored credentials
-                    docker.withRegistry('', "${DOCKER_HUB_CREDENTIALS}") {
-                        // You can add further actions here if needed
-                    }
+                    // Login to DockerHub using the credentials ID
+                    docker.withRegistry('', 'DockerHub') {
+                    // This will authenticate using the credentials stored in Jenkins
                 }
             }
         }
