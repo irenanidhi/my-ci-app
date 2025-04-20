@@ -40,7 +40,8 @@ pipeline {
                 script {
                     // Login to DockerHub using the credentials ID
                     docker.withRegistry('', 'DockerHub') {
-                    // This will authenticate using the credentials stored in Jenkins
+                        echo 'Successfully logged into DockerHub'
+                    }
                 }
             }
         }
@@ -49,7 +50,7 @@ pipeline {
             steps {
                 script {
                     // Push the Docker image to DockerHub
-                    docker.withRegistry('', "${DOCKER_HUB_CREDENTIALS}") {
+                    docker.withRegistry('', 'DockerHub') {
                         docker.image('my-ci-app').push()
                     }
                 }
