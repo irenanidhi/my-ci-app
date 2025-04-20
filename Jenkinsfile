@@ -38,9 +38,10 @@ pipeline {
         stage('Login to DockerHub') {
             steps {
                 script {
-                    // Login to DockerHub using the credentials ID
+                    // Use the full path to Docker command in Jenkins
+                    sh '/usr/local/bin/docker --version'  // Test if the full path works
                     docker.withRegistry('', 'DockerHub') {
-                        echo 'Successfully logged into DockerHub'
+                // Authenticate with DockerHub
                     }
                 }
             }
