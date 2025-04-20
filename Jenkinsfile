@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_HUB_CREDENTIALS = 'DockerHub'  // Reference to the DockerHub credentials ID
+        DOCKER_PATH = '/usr/local/bin/docker'  // Full path to Docker command (adjust if necessary)
     }
 
     stages {
@@ -12,11 +13,21 @@ pipeline {
             }
         }
 
+        stage('Check Docker Version') {
+            steps {
+                script {
+                    // Verify Docker is available
+                    sh "${DOCKER_PATH} --version"
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
                     try {
-                        docker.build('my-ci-app')
+                        // Build the Docker image using the full path to the docker command
+                        sh "${DOCKER_PATH} build -t my-ci-app ."
                     } catch (Exception e) {
                         error "Docker build failed: ${e.message}"
                     }
@@ -27,8 +38,9 @@ pipeline {
         stage('Login to DockerHub') {
             steps {
                 script {
+                    // Login to DockerHub using the stored credentials
                     docker.withRegistry('', "${DOCKER_HUB_CREDENTIALS}") {
-                        // This will authenticate using the credentials stored in Jenkins
+                        // You can add further actions here if needed
                     }
                 }
             }
@@ -37,8 +49,9 @@ pipeline {
         stage('Push Docker Image to DockerHub') {
             steps {
                 script {
+                    // Push the Docker image to DockerHub
                     docker.withRegistry('', "${DOCKER_HUB_CREDENTIALS}") {
-                        docker.image('my-ci-app').push('latest')
+                        docker.image('my-ci-app').push()
                     }
                 }
             }
@@ -47,16 +60,8 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
+                    // Deployment steps, like running the container, or deploying it on your server
                     echo 'Deploying the Docker container...'
-                    // Add actual deployment steps here
-                }
-            }
-        }
-
-        stage('Cleanup') {
-            steps {
-                script {
-                    sh 'docker system prune -f'
                 }
             }
         }
