@@ -35,35 +35,35 @@ pipeline {
             }
         }
 
-        stage('Login to DockerHub') {
-            steps {
-                script {
-                    // Pass password via stdin to sudo
-                    sh "echo $SUDO_PASSWORD | sudo -S /usr/local/bin/docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
-                }
-            }
-        }
+    //     stage('Login to DockerHub') {
+    //         steps {
+    //             script {
+    //                 // Pass password via stdin to sudo
+    //                 sh "echo $SUDO_PASSWORD | sudo -S /usr/local/bin/docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD"
+    //             }
+    //         }
+    //     }
 
-        stage('Push Docker Image to DockerHub') {
-            steps {
-                script {
-                    // Push the Docker image to DockerHub
-                    docker.withRegistry('', 'DockerHub') {
-                        docker.image('my-ci-app').push()
-                    }
-                }
-            }
-        }
+    //     stage('Push Docker Image to DockerHub') {
+    //         steps {
+    //             script {
+    //                 // Push the Docker image to DockerHub
+    //                 docker.withRegistry('', 'DockerHub') {
+    //                     docker.image('my-ci-app').push()
+    //                 }
+    //             }
+    //         }
+    //     }
 
-        stage('Deploy') {
-            steps {
-                script {
-                    // Deployment steps, like running the container, or deploying it on your server
-                    echo 'Deploying the Docker container...'
-                }
-            }
-        }
-    }
+    //     stage('Deploy') {
+    //         steps {
+    //             script {
+    //                 // Deployment steps, like running the container, or deploying it on your server
+    //                 echo 'Deploying the Docker container...'
+    //             }
+    //         }
+    //     }
+    // }
 
     post {
         success {
