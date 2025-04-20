@@ -8,16 +8,18 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                // Clones your Git repository
-                git 'https://github.com/irenanidhi/my-ci-app'
+                git credentialsId: 'GitHub', branch: 'main', url: 'https://github.com/irenanidhi/my-ci-app'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image
-                    docker.build('my-ci-app')
+                    try {
+                        docker.build('my-ci-app')
+                    } catch (Exception e) {
+                        error "Docker build failed: ${e.message}"
+                    }
                 }
             }
         }
@@ -25,7 +27,6 @@ pipeline {
         stage('Login to DockerHub') {
             steps {
                 script {
-                    // Login to DockerHub
                     docker.withRegistry('', "${DOCKER_HUB_CREDENTIALS}") {
                         // This will authenticate using the credentials stored in Jenkins
                     }
@@ -36,9 +37,8 @@ pipeline {
         stage('Push Docker Image to DockerHub') {
             steps {
                 script {
-                    // Push the Docker image to DockerHub
                     docker.withRegistry('', "${DOCKER_HUB_CREDENTIALS}") {
-                        docker.image('my-ci-app').push()
+                        docker.image('my-ci-app').push('latest')
                     }
                 }
             }
@@ -47,8 +47,16 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Deployment steps, like running the container, or deploying it on your server
                     echo 'Deploying the Docker container...'
+                    // Add actual deployment steps here
+                }
+            }
+        }
+
+        stage('Cleanup') {
+            steps {
+                script {
+                    sh 'docker system prune -f'
                 }
             }
         }
@@ -63,4 +71,3 @@ pipeline {
         }
     }
 }
-
